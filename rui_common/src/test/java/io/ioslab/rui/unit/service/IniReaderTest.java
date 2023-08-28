@@ -29,7 +29,7 @@ class IniReaderTest {
     }
 
     @Test
-    void setIniReader_StringShorterthanFour_doesThrowIndexOutOfBoundsException() {
+    void setIniReader_StringShorterThanFour_doesThrowIndexOutOfBoundsException() {
         assertThrows(IndexOutOfBoundsException.class, () -> IniReader.setIniReader("ANY"));
     }
     @Test
@@ -44,21 +44,21 @@ class IniReaderTest {
     }
 
     @Test
-    void getMySqlModelFromIni_NotAFile_doesThrowNullPointerException() throws IOException {
+    void getMySqlModelFromIni_NotAFile_doesThrowNullPointerException() {
         IniReader.setIniReader("ANY.ini");
         IniReader reader = IniReader.getIniReaderder();
         assertThrows(NullPointerException.class, reader::getMySqlModelFromIni);
     }
 
     @Test
-    void getMailModelFromIni_NotAFile_doesThrowNullPointerException() throws IOException {
+    void getMailModelFromIni_NotAFile_doesThrowNullPointerException() {
         IniReader.setIniReader("ANY.ini");
         IniReader reader = IniReader.getIniReaderder();
         assertThrows(NullPointerException.class, reader::getMailModelFromIni);
     }
 
     @Test
-    void getSmtpModelFromIni_NotAFile_doesThrowNullPointerException() throws IOException {
+    void getSmtpModelFromIni_NotAFile_doesThrowNullPointerException() {
         IniReader.setIniReader("ANY.ini");
         IniReader reader = IniReader.getIniReaderder();
         assertThrows(NullPointerException.class, reader::getSmtpModelFromIni);
