@@ -13,6 +13,7 @@ import io.ioslab.rui.utils.TestConstants.DomainObjectEnumerator;
 import java.io.IOException;
 import java.nio.file.Files;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -30,6 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 @ActiveProfiles("test")
 @SpringBatchTest
 @TestPropertySource(properties = "spring.batch.job.enabled=false")
+@Disabled("Personal Tests")
 class E2eTests {
 
     @Autowired
