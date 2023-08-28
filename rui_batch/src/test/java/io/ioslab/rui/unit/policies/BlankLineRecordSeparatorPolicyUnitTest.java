@@ -26,8 +26,18 @@ class BlankLineRecordSeparatorPolicyUnitTest {
     }
 
     @Test
+    void isEndOfRecord_doubleReturn_doesReturnFalse() {
+        assertThat(blankLineRecordSeparatorPolicy.isEndOfRecord("\n\n    ")).isFalse();
+    }
+
+    @Test
     void postProcess_anyEmptyAfterTrim_doesReturnNull() {
         assertThat(blankLineRecordSeparatorPolicy.postProcess("    ")).isNull();
+    }
+
+    @Test
+    void postProcess_doubleReturn_doesReturnNull() {
+        assertThat(blankLineRecordSeparatorPolicy.postProcess("\n\n    ")).isNull();
     }
 
     @Test

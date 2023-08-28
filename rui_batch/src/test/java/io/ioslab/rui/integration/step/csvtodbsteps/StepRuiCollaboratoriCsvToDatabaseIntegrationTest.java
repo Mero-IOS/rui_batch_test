@@ -112,8 +112,7 @@ class StepRuiCollaboratoriCsvToDatabaseIntegrationTest {
             SendEmailError.class)) {
             executionContext.put(PARAMETER_OUTPUT_PATH,
                                  mockCsvWithOnlyFailingRecords.getFile().getPath());
-            jobLauncherTestUtils.launchStep(
-                "ruiCollaboratoriCsvToDatabaseStep", executionContext);
+            jobLauncherTestUtils.launchStep("ruiCollaboratoriCsvToDatabaseStep", executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
         }
@@ -139,8 +138,7 @@ class StepRuiCollaboratoriCsvToDatabaseIntegrationTest {
              MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             castingMockedStatic.when(() -> Casting.castStringToDate(anyString()))
                                .thenThrow(new ParseException("TEST_EXCEPTION"));
-            jobLauncherTestUtils.launchStep(
-                "ruiCollaboratoriCsvToDatabaseStep", executionContext);
+            jobLauncherTestUtils.launchStep("ruiCollaboratoriCsvToDatabaseStep", executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
         }
