@@ -7,7 +7,7 @@ import io.ioslab.rui.batch.utility.SendEmailError;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-public class ReaderListenerUnitTest {
+class ReaderListenerUnitTest {
 
     public ReaderListener readerListener;
 
@@ -18,8 +18,8 @@ public class ReaderListenerUnitTest {
             readerListener = ReaderListener.builder().fileName("TEST_FILE").build();
             Exception e = new Exception("TEST_EXCEPTION");
             readerListener.onReadError(e);
-            sendEmailErrorMockedStatic.verify(() -> SendEmailError.manageError(
-                "errore durante la lettura del file: TEST_FILE"));
+            sendEmailErrorMockedStatic.verify(
+                () -> SendEmailError.manageError("errore durante la lettura del file: TEST_FILE"));
         }
     }
 

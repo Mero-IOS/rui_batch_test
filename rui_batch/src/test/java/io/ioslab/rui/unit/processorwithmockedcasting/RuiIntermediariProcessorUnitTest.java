@@ -1,6 +1,7 @@
 package io.ioslab.rui.unit.processorwithmockedcasting;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -22,11 +23,30 @@ class RuiIntermediariProcessorUnitTest {
         try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             Date testDate = new Date();
             when(Casting.castStringToDate(any())).thenReturn(testDate);
-            RuiIntermediari collaboratori = new RuiIntermediari();
-            ruiIntermediariProcessor.process(collaboratori);
-            assertThat(collaboratori.getDataElaborazione()).isEqualTo(testDate);
+            RuiIntermediari intermediari = new RuiIntermediari();
+            ruiIntermediariProcessor.process(intermediari);
+            assertThat(intermediari.getDataElaborazione()).isEqualTo(testDate);
+        }
+    }
+    @Test
+    void process_null_doesKeepNullAsDataElaborazione() {
+        ruiIntermediariProcessor = RuiIntermediariProcessor.builder().build();
+        try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
+            when(Casting.castStringToDate(any())).thenReturn(null);
+            RuiIntermediari intermediari = new RuiIntermediari();
+            ruiIntermediariProcessor.process(intermediari);
+            assertThat(intermediari.getDataElaborazione()).isNull();
         }
     }
 
+    @Test
+    void process_anyException_doesRethrowException() {
+        ruiIntermediariProcessor = RuiIntermediariProcessor.builder().build();
+        try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
+            when(Casting.castStringToDate(any())).thenThrow(new RuntimeException("TEST_EXCEPTION"));
+            RuiIntermediari intermediari = new RuiIntermediari();
+            assertThrows(RuntimeException.class, () -> ruiIntermediariProcessor.process(intermediari));
+        }
+    }
 }
 

@@ -2,8 +2,8 @@ package io.ioslab.rui.unit.reader;
 
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
 import static io.ioslab.rui.utils.TestConstants.CSV_FILE_NAME_DATE;
-import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_FAILING_CSV;
 import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_CSV;
+import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_FAILING_CSV;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
 import static io.ioslab.rui.utils.TestUtils.getExecutionContext;
 import static io.ioslab.rui.utils.TestUtils.mockChunkContext;

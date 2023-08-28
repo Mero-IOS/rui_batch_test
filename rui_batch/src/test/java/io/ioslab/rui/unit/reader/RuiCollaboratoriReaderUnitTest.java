@@ -1,11 +1,11 @@
 package io.ioslab.rui.unit.reader;
 
-import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_FAILING_CSV;
-import static io.ioslab.rui.utils.TestUtils.getExecutionContext;
-import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static io.ioslab.rui.utils.TestConstants.CSV_FILE_NAME_DATE;
 import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_CSV;
+import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_FAILING_CSV;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
+import static io.ioslab.rui.utils.TestUtils.getExecutionContext;
+import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -31,7 +31,6 @@ class RuiCollaboratoriReaderUnitTest {
     private final Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
         "mockCsv/mockCsvWithOnlyFailingRecords");
 
-
     @BeforeEach
     void setFlatFileItemReader() throws IOException {
         flatFileItemReader = new RuiCollaboratoriReader().readerRuiCollaboratori(
@@ -43,7 +42,7 @@ class RuiCollaboratoriReaderUnitTest {
     void readerRuiCollaboratori_invalidCsvDate_throwsExceptionInOpening() throws IOException {
         flatFileItemReader = new RuiCollaboratoriReader().readerRuiCollaboratori(
             mockCsvWithValidAndInvalidRecords.getFile().getPath(), "");
-        ExecutionContext executionContext= getExecutionContext(chunkContextMock);
+        ExecutionContext executionContext = getExecutionContext(chunkContextMock);
         assertThrows(ItemStreamException.class, () -> flatFileItemReader.open(executionContext));
     }
 
@@ -78,7 +77,8 @@ class RuiCollaboratoriReaderUnitTest {
     }
 
     @Test
-    void readerRuiCollaboratori_fromElevenInvalidRecordCsv_throwsElevenExceptions() throws Exception {
+    void readerRuiCollaboratori_fromElevenInvalidRecordCsv_throwsElevenExceptions()
+        throws Exception {
         flatFileItemReader = new RuiCollaboratoriReader().readerRuiCollaboratori(
             mockCsvWithOnlyFailingRecords.getFile().getPath(), CSV_FILE_NAME_DATE);
         flatFileItemReader.afterPropertiesSet();
@@ -96,6 +96,5 @@ class RuiCollaboratoriReaderUnitTest {
         }
         assertThat(lastIndex).isEqualTo(FAILING_RECORD_PER_FAILING_CSV);
     }
-
 
 }

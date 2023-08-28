@@ -51,13 +51,13 @@ class StepRuiSediCsvToDatabaseIntegrationTest {
 
     private ExecutionContext executionContext;
 
-    private Resource mockCsvWithValidRecords = new ClassPathResource(
+    private final Resource mockCsvWithValidRecords = new ClassPathResource(
         "mockCsv/mockCsvWithValidRecords");
-    private Resource mockCsvWithSingleValidRecord = new ClassPathResource(
+    private final Resource mockCsvWithSingleValidRecord = new ClassPathResource(
         "mockCsv/mockCsvWithSingleValidRecord");
-    private Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
+    private final Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
         "mockCsv/mockCsvWithValidAndInvalidRecords");
-    private Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
+    private final Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
         "mockCsv/mockCsvWithOnlyFailingRecords");
 
     @BeforeEach
@@ -68,7 +68,7 @@ class StepRuiSediCsvToDatabaseIntegrationTest {
     }
 
     @AfterEach
-    void truncateTables(){
+    void truncateTables() {
         try {
             jdbcTemplate.update(TRUNCATE_SQL);
         } catch (BadSqlGrammarException e) {
@@ -111,7 +111,7 @@ class StepRuiSediCsvToDatabaseIntegrationTest {
             SendEmailError.class)) {
             executionContext.put(PARAMETER_OUTPUT_PATH,
                                  mockCsvWithOnlyFailingRecords.getFile().getPath());
-            JobExecution jobExecution = jobLauncherTestUtils.launchStep("ruiSediCsvToDatabaseStep",
+            jobLauncherTestUtils.launchStep("ruiSediCsvToDatabaseStep",
                                                                         executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
@@ -138,7 +138,7 @@ class StepRuiSediCsvToDatabaseIntegrationTest {
              MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             castingMockedStatic.when(() -> Casting.castStringToDate(anyString()))
                                .thenThrow(new ParseException("TEST_EXCEPTION"));
-            JobExecution execution = jobLauncherTestUtils.launchStep("ruiSediCsvToDatabaseStep",
+            jobLauncherTestUtils.launchStep("ruiSediCsvToDatabaseStep",
                                                                      executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));

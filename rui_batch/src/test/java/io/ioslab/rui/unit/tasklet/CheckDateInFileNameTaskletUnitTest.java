@@ -20,15 +20,16 @@ import org.springframework.core.io.Resource;
 class CheckDateInFileNameTaskletUnitTest {
 
     CheckDateInFileNameTasklet tasklet;
-   private final Resource mockCsvWithValidAndInvalidRecords
-       = new ClassPathResource("mockCsv/mockCsvWithValidAndInvalidRecords");
+    private final Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
+        "mockCsv/mockCsvWithValidAndInvalidRecords");
     private final Resource mockCsvWithSingleWrongDate = new ClassPathResource(
         "mockCsv/mockCsvWithSingleWrongDate");
 
     @BeforeEach
     void setTasklet() throws IOException {
         tasklet = CheckDateInFileNameTasklet.builder()
-                                            .outputPath(mockCsvWithValidAndInvalidRecords.getFile().getPath())
+                                            .outputPath(mockCsvWithValidAndInvalidRecords.getFile()
+                                                                                         .getPath())
                                             .date(TestConstants.CSV_FILE_NAME_DATE)
                                             .build();
     }

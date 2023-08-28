@@ -1,21 +1,18 @@
 package io.ioslab.rui.unit.tasklet;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import io.ioslab.rui.batch.tasklet.DownLoadZipTasklet;
 import io.ioslab.rui.batch.utility.SendEmailError;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import lombok.SneakyThrows;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -33,9 +30,7 @@ class Todo_DownloadZipTaskletUnitTest {
     private DownLoadZipTasklet downLoadZipTasklet;
     @TempDir
     private Path tempOut;
-    private final Resource mockZip = new ClassPathResource(
-        "unzipTaskletMockZips/MOCKDATA.zip");
-
+    private final Resource mockZip = new ClassPathResource("unzipTaskletMockZips/MOCKDATA.zip");
 
     @Mock
     URL mockUrl;
@@ -53,17 +48,16 @@ class Todo_DownloadZipTaskletUnitTest {
 
     @SneakyThrows
     @Test
-    @Disabled
+    @Disabled("TODO")
     void execute_withAnyUrl_doesDownload() {
         try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
             SendEmailError.class);
-             MockedStatic<Channels> channelsMockedStatic = mockStatic(Channels.class);
-       ) {
+             MockedStatic<Channels> channelsMockedStatic = mockStatic(Channels.class)) {
+            //TODO make openUrl return InputZip InputStream
             when(Channels.newChannel(mockUrl.openStream())).thenReturn(mockZip.readableChannel());
             downLoadZipTasklet.execute(mock(StepContribution.class), mock(ChunkContext.class));
         }
+        fail("TODO");
     }
-
-    //TODO why not return inputZip?
 
 }

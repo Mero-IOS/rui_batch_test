@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-public class MailErrorExceptionUnitTest {
+class MailErrorExceptionUnitTest {
 
     @Test
-    void newException_WrongFormat_doesThrowMailErrorException() {
+    void newException_constructor_doesSendMail() {
         try (MockedStatic<SendEmailError> sendMailErrorMock = Mockito.mockStatic(
             SendEmailError.class)) {
             new MailErrorException("TEST_EXCEPTION");
@@ -18,11 +18,12 @@ public class MailErrorExceptionUnitTest {
     }
 
     @Test
-    void castStringToDate_WrongFormat_doesThrowMailErrorException() {
+    void castStringToDate_constructor_doesSendMail(){
         try (MockedStatic<SendEmailError> sendMailErrorMock = Mockito.mockStatic(
             SendEmailError.class)) {
             new MailErrorException("TEST_EXCEPTION", "TEST_TRACE");
-            sendMailErrorMock.verify(() -> SendEmailError.manageError("TEST_EXCEPTION", "TEST_TRACE"));
+            sendMailErrorMock.verify(
+                () -> SendEmailError.manageError("TEST_EXCEPTION", "TEST_TRACE"));
         }
     }
 

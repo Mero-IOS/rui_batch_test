@@ -8,7 +8,6 @@ import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_SQL_DATE;
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 
 import io.ioslab.rui.batch.RuiBatchApplication;

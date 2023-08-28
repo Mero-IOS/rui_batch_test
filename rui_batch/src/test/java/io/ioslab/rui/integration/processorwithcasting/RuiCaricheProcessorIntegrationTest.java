@@ -12,7 +12,6 @@ import io.ioslab.rui.batch.utility.SendEmailError;
 import io.ioslab.rui.common.model.rui.RuiCariche;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.springframework.test.context.jdbc.Sql;
 
 class RuiCaricheProcessorIntegrationTest {
 

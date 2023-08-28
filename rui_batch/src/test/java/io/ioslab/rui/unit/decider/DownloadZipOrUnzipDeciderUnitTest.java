@@ -24,7 +24,7 @@ class DownloadZipOrUnzipDeciderUnitTest {
     @BeforeEach
     void setup() {
         jobExecutionMock = mock(JobExecution.class);
-        executionContextMock =mock(ExecutionContext.class);
+        executionContextMock = mock(ExecutionContext.class);
         toTest = new DownloadZipOrUnzipDecider();
     }
 

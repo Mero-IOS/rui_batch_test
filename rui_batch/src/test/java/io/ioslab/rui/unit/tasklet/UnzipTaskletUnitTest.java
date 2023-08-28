@@ -34,13 +34,15 @@ class UnzipTaskletUnitTest {
     Path zipClonedToOutputPath;
     Resource inputZip = new ClassPathResource("unzipTaskletMockZips/MOCKDATA.zip");
 
-    Resource emptyEntryInputZip = new ClassPathResource("unzipTaskletMockZips/ZERO_BYTES_ENTRY.zip");
+    Resource emptyEntryInputZip = new ClassPathResource(
+        "unzipTaskletMockZips/ZERO_BYTES_ENTRY.zip");
 
     @BeforeEach
     void setup() throws IOException {
         outputPath = Files.createTempDirectory("OUTPUT_TEST").toString();
         zipClonedToOutputPath = Paths.get(outputPath)
-                                     .resolve("DATI_RUI_" + TestConstants.CSV_FILE_NAME_DATE + ".zip");
+                                     .resolve(
+                                         "DATI_RUI_" + TestConstants.CSV_FILE_NAME_DATE + ".zip");
         Files.copy(Paths.get(inputZip.getFile().getPath()), zipClonedToOutputPath);
         unzipTasklet = UnzipTasklet.builder()
                                    .date(TestConstants.CSV_FILE_NAME_DATE)

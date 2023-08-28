@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import io.ioslab.rui.batch.processor.RuiCaricheProcessor;
 import io.ioslab.rui.batch.utility.Casting;
 import io.ioslab.rui.common.model.rui.RuiCariche;
-import java.text.ParseException;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -47,7 +46,7 @@ class RuiCaricheProcessorUnitTest {
         try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             when(Casting.castStringToDate(any())).thenThrow(new RuntimeException("TEST_EXCEPTION"));
             RuiCariche cariche = new RuiCariche();
-            assertThrows(RuntimeException.class, ()->ruiCaricheProcessor.process(cariche));
+            assertThrows(RuntimeException.class, () -> ruiCaricheProcessor.process(cariche));
         }
     }
 

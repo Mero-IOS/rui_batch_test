@@ -14,11 +14,11 @@ class CustomSkipPolicyUnitTest {
 
     @Test
     void shouldSkip_overTen_doesThrowException() {
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(SendEmailError.class)) {
+        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
+            SendEmailError.class)) {
             CustomSkipPolicy customSkipPolicy = CustomSkipPolicy.builder().build();
-            assertThrows(MailErrorException.class,
-                         () -> customSkipPolicy.shouldSkip(new RuntimeException("TEST_EXCEPTION"),
-                                                           12));
+            RuntimeException testException = new RuntimeException("TEST_EXCEPTION");
+            assertThrows(MailErrorException.class, () -> customSkipPolicy.shouldSkip(testException, 12));
         }
     }
 

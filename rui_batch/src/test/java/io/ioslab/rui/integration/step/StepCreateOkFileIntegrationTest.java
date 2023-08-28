@@ -29,6 +29,7 @@ import org.springframework.test.context.TestPropertySource;
 @SpringBatchTest
 @TestPropertySource(properties = "spring.batch.job.enabled=false")
 class StepCreateOkFileIntegrationTest {
+
     @Autowired
     Job ruiBatchJob;
 
@@ -39,6 +40,7 @@ class StepCreateOkFileIntegrationTest {
     Path tempDir;
 
     ExecutionContext executionContext;
+
     @BeforeEach
     void setParams() {
         executionContext = new ExecutionContext();
@@ -46,16 +48,15 @@ class StepCreateOkFileIntegrationTest {
     }
 
     @Test
-    void execute_AnyDirectory_doesComplete() throws Exception {
+    void execute_AnyDirectory_doesComplete() {
         JobExecution shouldComplete = jobLauncherTestUtils.launchStep("createOkFileStep",
                                                                       executionContext);
         assertThat(shouldComplete.getExitStatus().getExitCode()).isEqualTo("COMPLETED");
     }
 
     @Test
-    void execute_AnyDirectory_doesCreateOkFile() throws Exception {
-        jobLauncherTestUtils.launchStep("createOkFileStep",
-                                                                      executionContext);
+    void execute_AnyDirectory_doesCreateOkFile() {
+        jobLauncherTestUtils.launchStep("createOkFileStep", executionContext);
         assertThat(tempDir.toFile().listFiles()).anyMatch(file -> file.getName().equals("ok"));
     }
 

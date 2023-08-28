@@ -28,6 +28,20 @@ class CreateOkFileTaskletUnitTest {
         assertThat(tempDir.toFile().listFiles()).anyMatch(
             okFile -> okFile.getName().contains("ok"));
     }
+    @Test
+    void execute_AnyDirectoryWithExistingFile_doesNothing() {
+        try (MockedStatic<Files> filesMockedStatic = mockStatic(Files.class)) {
+            when(Files.notExists(any())).thenReturn(false);
+            CreateOkFileTasklet tasklet = CreateOkFileTasklet.builder()
+                                                             .outputPath(tempDir.toString())
+                                                             .build();
+            tasklet.execute(null, null);
+            assertThat(tempDir.toFile().listFiles()).noneMatch(
+                okFile -> okFile.getName().contains("ok"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
     void execute_AnyDirectory_doesRethrowExceptions() throws Exception {

@@ -19,12 +19,12 @@ class RuiSediProcessorUnitTest {
 
     @Test
     void process_anyDate_doesSetDate() {
-        ruiSediProcessor = new RuiProcessorConfiguration().processorRuiSedi(CSV_DATE_AS_VALID_JOB_PARAMETER);
+        ruiSediProcessor = new RuiProcessorConfiguration().processorRuiSedi(
+            CSV_DATE_AS_VALID_JOB_PARAMETER);
         RuiSedi sedi = new RuiSedi();
         ruiSediProcessor.process(sedi);
         assertThat(sedi.getDataElaborazione()).isEqualTo(CSV_DATE_AS_VALID_JOB_PARAMETER);
     }
-
 
     @Test
     void process_nullDate_doesSetDateAsNull() {
@@ -44,7 +44,8 @@ class RuiSediProcessorUnitTest {
 
     @Test
     void process_invalidDate_doesThrowMailErrorException() {
-        try(MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(SendEmailError.class)){
+        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
+            SendEmailError.class)) {
             ruiSediProcessor = new RuiProcessorConfiguration().processorRuiSedi("INVALID_DATE");
             RuiSedi sedi = new RuiSedi();
             assertThrows(MailErrorException.class, () -> ruiSediProcessor.process(sedi));

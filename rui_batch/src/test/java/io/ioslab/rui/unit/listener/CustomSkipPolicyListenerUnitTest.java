@@ -2,7 +2,6 @@ package io.ioslab.rui.unit.listener;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -28,7 +27,9 @@ class CustomSkipPolicyListenerUnitTest {
     @BeforeEach
     void setCustomSkipPolicyListener() throws IOException {
         tempPath = Files.createTempDirectory("RuiTest");
-        customSkipPolicyListener = new CustomSkipPolicyListenerConfiguration().listenerCustomSkipPolicy(tempPath.toString());
+        customSkipPolicyListener
+            = new CustomSkipPolicyListenerConfiguration().listenerCustomSkipPolicy(
+            tempPath.toString());
     }
 
     @Test

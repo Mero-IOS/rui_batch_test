@@ -6,10 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import io.ioslab.rui.batch.processor.RuiCaricheProcessor;
 import io.ioslab.rui.batch.processor.RuiCollaboratoriProcessor;
 import io.ioslab.rui.batch.utility.Casting;
-import io.ioslab.rui.common.model.rui.RuiCariche;
 import io.ioslab.rui.common.model.rui.RuiCollaboratori;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
@@ -49,7 +47,9 @@ class RuiCollaboratoriProcessorUnitTest {
         try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             when(Casting.castStringToDate(any())).thenThrow(new RuntimeException("TEST_EXCEPTION"));
             RuiCollaboratori collaboratori = new RuiCollaboratori();
-            assertThrows(RuntimeException.class, ()->ruiCollaboratoriProcessor.process(collaboratori));
+            assertThrows(RuntimeException.class,
+                         () -> ruiCollaboratoriProcessor.process(collaboratori));
         }
     }
+
 }

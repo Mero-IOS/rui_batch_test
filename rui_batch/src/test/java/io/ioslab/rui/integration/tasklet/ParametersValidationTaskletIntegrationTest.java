@@ -1,9 +1,9 @@
 package io.ioslab.rui.integration.tasklet;
 
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_DATE_CSV;
+import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
 import static io.ioslab.rui.utils.TestUtils.getExecutionContext;
 import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
-import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;

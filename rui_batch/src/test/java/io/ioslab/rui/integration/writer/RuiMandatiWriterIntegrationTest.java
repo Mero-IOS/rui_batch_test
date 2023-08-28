@@ -8,7 +8,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import io.ioslab.rui.batch.datasource.CustomDataSource;
 import io.ioslab.rui.batch.writer.RuiMandatiWriter;
 import io.ioslab.rui.common.model.rui.RuiMandati;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -33,7 +32,7 @@ class RuiMandatiWriterIntegrationTest {
     private List<RuiMandati> mandatiList;
 
     @BeforeEach
-    void setWriter() throws SQLException {
+    void setWriter() {
         dataSource = new CustomDataSource().getDataSourceTest();
         writer = new RuiMandatiWriter().writerRuiMandati(dataSource);
         writer.afterPropertiesSet();
@@ -57,5 +56,4 @@ class RuiMandatiWriterIntegrationTest {
             mandatiList.add(toAdd);
         }
     }
-
 }

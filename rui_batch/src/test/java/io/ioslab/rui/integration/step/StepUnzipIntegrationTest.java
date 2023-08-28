@@ -59,7 +59,8 @@ class StepUnzipIntegrationTest {
     void setParams() throws IOException {
         outputPath = Files.createTempDirectory("OUTPUT_TEST").toString();
         zipClonedToOutputPath = Paths.get(outputPath)
-                                     .resolve("DATI_RUI_" + TestConstants.CSV_FILE_NAME_DATE + ".zip");
+                                     .resolve(
+                                         "DATI_RUI_" + TestConstants.CSV_FILE_NAME_DATE + ".zip");
         Files.copy(Paths.get(inputZip.getFile().getPath()), zipClonedToOutputPath);
         String pathToCsvStubs = inputZip.getFile().getPath();
         String csvDate = (TestConstants.CSV_FILE_NAME_DATE);

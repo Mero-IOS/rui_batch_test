@@ -2,11 +2,11 @@ package io.ioslab.rui.integration.step.csvtodbsteps;
 
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_DATE_CSV;
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_OUTPUT_PATH;
-import static io.ioslab.rui.utils.TestUtils.makeTempDuplicateOfResource;
 import static io.ioslab.rui.utils.TestConstants.COUNT_MANDATI_SQL;
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
 import static io.ioslab.rui.utils.TestConstants.TRUNCATE_SQL;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
+import static io.ioslab.rui.utils.TestUtils.makeTempDuplicateOfResource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
@@ -51,13 +51,13 @@ class StepRuiMandatiCsvToDatabaseIntegrationTest {
 
     private ExecutionContext executionContext;
 
-    private Resource mockCsvWithValidRecords = new ClassPathResource(
+    private final Resource mockCsvWithValidRecords = new ClassPathResource(
         "mockCsv/mockCsvWithValidRecords");
-    private Resource mockCsvWithSingleValidRecord = new ClassPathResource(
+    private final Resource mockCsvWithSingleValidRecord = new ClassPathResource(
         "mockCsv/mockCsvWithSingleValidRecord");
-    private Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
+    private final Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
         "mockCsv/mockCsvWithValidAndInvalidRecords");
-    private Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
+    private final Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
         "mockCsv/mockCsvWithOnlyFailingRecords");
 
     @BeforeEach
@@ -111,8 +111,7 @@ class StepRuiMandatiCsvToDatabaseIntegrationTest {
             SendEmailError.class)) {
             executionContext.put(PARAMETER_OUTPUT_PATH,
                                  mockCsvWithOnlyFailingRecords.getFile().getPath());
-            JobExecution jobExecution = jobLauncherTestUtils.launchStep("ruiMandatiCsvToDatabaseStep",
-                                                                        executionContext);
+            jobLauncherTestUtils.launchStep("ruiMandatiCsvToDatabaseStep", executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
         }
@@ -138,8 +137,7 @@ class StepRuiMandatiCsvToDatabaseIntegrationTest {
              MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             castingMockedStatic.when(() -> Casting.castStringToDate(anyString()))
                                .thenThrow(new ParseException("TEST_EXCEPTION"));
-            JobExecution execution = jobLauncherTestUtils.launchStep("ruiMandatiCsvToDatabaseStep",
-                                                                     executionContext);
+            jobLauncherTestUtils.launchStep("ruiMandatiCsvToDatabaseStep", executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
         }

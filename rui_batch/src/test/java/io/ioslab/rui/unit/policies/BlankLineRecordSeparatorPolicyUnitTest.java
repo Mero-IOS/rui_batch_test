@@ -7,33 +7,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BlankLineRecordSeparatorPolicyUnitTest {
+
     BlankLineRecordSeparatorPolicy blankLineRecordSeparatorPolicy;
 
     @BeforeEach
-    void setBlankLineRecordSeparatorPolicy(){
-        blankLineRecordSeparatorPolicy =new BlankLineRecordSeparatorPolicy();
+    void setBlankLineRecordSeparatorPolicy() {
+        blankLineRecordSeparatorPolicy = new BlankLineRecordSeparatorPolicy();
     }
 
     @Test
-    void isEndOfRecord_anyNonEmptyAfterTrim_doesReturnTrue(){
+    void isEndOfRecord_anyNonEmptyAfterTrim_doesReturnTrue() {
         assertThat(blankLineRecordSeparatorPolicy.isEndOfRecord("ANY_STRING")).isTrue();
     }
 
-
     @Test
-    void isEndOfRecord_anyEmptyAfterTrim_doesReturnFalse(){
+    void isEndOfRecord_anyEmptyAfterTrim_doesReturnFalse() {
         assertThat(blankLineRecordSeparatorPolicy.isEndOfRecord("    ")).isFalse();
     }
 
     @Test
-    void postProcess_anyEmptyAfterTrim_doesReturnNull(){
+    void postProcess_anyEmptyAfterTrim_doesReturnNull() {
         assertThat(blankLineRecordSeparatorPolicy.postProcess("    ")).isNull();
     }
 
     @Test
-    void postProcess_anyNonEmptyAfterTrim_doesReturnAnyString(){
-        assertThat(blankLineRecordSeparatorPolicy.postProcess("ANY_STRING")).isEqualTo("ANY_STRING");
+    void postProcess_anyNonEmptyAfterTrim_doesReturnAnyString() {
+        assertThat(blankLineRecordSeparatorPolicy.postProcess("ANY_STRING")).isEqualTo(
+            "ANY_STRING");
     }
-
 
 }

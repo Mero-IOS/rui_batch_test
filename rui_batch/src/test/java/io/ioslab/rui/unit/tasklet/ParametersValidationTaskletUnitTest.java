@@ -52,7 +52,7 @@ class ParametersValidationTaskletUnitTest {
     @Test
     void execute_noUrlOrInput_DoesThrowMailErrorExceptionWithMethod() {
         parametersValidationTasklet = ParametersValidationTasklet.builder().build();
-        assertThrows(MailErrorException.class, () -> executeTaskletWithMocks());
+        assertThrows(MailErrorException.class, this::executeTaskletWithMocks);
     }
 
     @Test
@@ -61,7 +61,7 @@ class ParametersValidationTaskletUnitTest {
                                                                  .url(ANY_PARAM)
                                                                  .inputPath(ANY_PARAM)
                                                                  .build();
-        assertThrows(MailErrorException.class, () -> executeTaskletWithMocks());
+        assertThrows(MailErrorException.class, this::executeTaskletWithMocks);
     }
 
     @Test
@@ -71,7 +71,7 @@ class ParametersValidationTaskletUnitTest {
                                                                  .outputPath(tempOut.toString())
                                                                  .inputPath(null)
                                                                  .build();
-        assertThrows(MailErrorException.class, () -> executeTaskletWithMocks());
+        assertThrows(MailErrorException.class, this::executeTaskletWithMocks);
     }
 
     @Test
@@ -81,7 +81,7 @@ class ParametersValidationTaskletUnitTest {
                                                                  .outputPath("")
                                                                  .url(ANY_PARAM)
                                                                  .build();
-        assertThrows(MailErrorException.class, () -> executeTaskletWithMocks());
+        assertThrows(MailErrorException.class, this::executeTaskletWithMocks);
     }
 
     @Test
@@ -104,7 +104,6 @@ class ParametersValidationTaskletUnitTest {
 
     @Test
     void execute_emptyStringInputPath_DoesNotPutInputPathInContext() throws Exception {
-        Path tempDir = Files.createTempFile(ANY_PARAM, ".zip");
         parametersValidationTasklet = ParametersValidationTasklet.builder()
                                                                  .inputPath("")
                                                                  .outputPath(tempOut.toString())
@@ -112,7 +111,6 @@ class ParametersValidationTaskletUnitTest {
                                                                  .build();
         assertThat(executeTaskletWithMocks().get(PARAMETER_INPUT_PATH)).isNull();
     }
-
 
     @Test
     void execute_anyOutputPathAnyDate_DoesCreateOutputFolder() throws Exception {

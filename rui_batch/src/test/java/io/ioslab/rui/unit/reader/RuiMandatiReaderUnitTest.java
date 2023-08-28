@@ -1,11 +1,11 @@
 package io.ioslab.rui.unit.reader;
 
-import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_FAILING_CSV;
-import static io.ioslab.rui.utils.TestUtils.getExecutionContext;
-import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static io.ioslab.rui.utils.TestConstants.CSV_FILE_NAME_DATE;
 import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_CSV;
+import static io.ioslab.rui.utils.TestConstants.FAILING_RECORD_PER_FAILING_CSV;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
+import static io.ioslab.rui.utils.TestUtils.getExecutionContext;
+import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -31,7 +31,6 @@ class RuiMandatiReaderUnitTest {
     private final Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
         "mockCsv/mockCsvWithOnlyFailingRecords");
 
-
     @BeforeEach
     void setFlatFileItemReader() throws IOException {
         flatFileItemReader = new RuiMandatiReader().readerRuiMandati(
@@ -43,10 +42,9 @@ class RuiMandatiReaderUnitTest {
     void readerRuiMandati_invalidCsvDate_throwsExceptionInOpening() throws IOException {
         flatFileItemReader = new RuiMandatiReader().readerRuiMandati(
             mockCsvWithValidAndInvalidRecords.getFile().getPath(), "");
-        ExecutionContext executionContext= getExecutionContext(chunkContextMock);
+        ExecutionContext executionContext = getExecutionContext(chunkContextMock);
         assertThrows(ItemStreamException.class, () -> flatFileItemReader.open(executionContext));
     }
-
 
     @Test
     void readerRuiMandati_fromValidCsv_doesRead() throws Exception {
@@ -96,4 +94,5 @@ class RuiMandatiReaderUnitTest {
         }
         assertThat(lastIndex).isEqualTo(FAILING_RECORD_PER_FAILING_CSV);
     }
+
 }

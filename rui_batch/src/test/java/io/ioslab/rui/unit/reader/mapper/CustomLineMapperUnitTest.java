@@ -16,7 +16,6 @@ import org.springframework.batch.item.file.LineMapper;
 import org.springframework.validation.BindException;
 
 class CustomLineMapperUnitTest {
-
     @Test
     void mapperRui_wrongStringArray_doesNotMapLine() {
         CustomLineMapper<Rui> customLineMapper = new CustomLineMapper<>(Rui.class);
@@ -57,8 +56,7 @@ class CustomLineMapperUnitTest {
     }
 
     @Test
-    void mapperRuiIntermediari_correctStringArray_doesNotMapLineWithoutFieldSetMapper()
-        throws Exception {
+    void mapperRuiIntermediari_correctStringArray_doesNotMapLineWithoutFieldSetMapper() {
         CustomLineMapper<RuiIntermediari> customLineMapper = new CustomLineMapper<>(
             RuiIntermediari.class);
         LineMapper<RuiIntermediari> mapper = customLineMapper.mapper("oss", "inoperativo",

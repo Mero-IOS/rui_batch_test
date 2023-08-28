@@ -1,11 +1,11 @@
 package io.ioslab.rui.integration.step;
 
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_DATE_CSV;
+import static io.ioslab.rui.utils.TestConstants.COUNT_CARICHE_SQL;
 import static io.ioslab.rui.utils.TestConstants.COUNT_COLLABORATORI_SQL;
 import static io.ioslab.rui.utils.TestConstants.COUNT_INTERMEDIARI_SQL;
 import static io.ioslab.rui.utils.TestConstants.COUNT_MANDATI_SQL;
 import static io.ioslab.rui.utils.TestConstants.COUNT_SEDI_SQL;
-import static io.ioslab.rui.utils.TestConstants.COUNT_CARICHE_SQL;
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_SQL_DATE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.fail;
@@ -16,7 +16,6 @@ import io.ioslab.rui.batch.RuiBatchApplication;
 import io.ioslab.rui.batch.tasklet.DeleteDuplicateTupleTasklet;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,8 +69,7 @@ class StepDeleteDuplicateTupleIntegrationTest {
 
     @Test
     void execute_SameDateAsSqlScript_doesRemoveAllCaricheFromDatabase() throws Exception {
-        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep",
-                                                                      executionContext);
+        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep", executionContext);
         try (Connection connection = dataSource.getConnection();
              Statement countStatement = connection.createStatement()) {
             ResultSet resultSet = countStatement.executeQuery(COUNT_CARICHE_SQL);
@@ -86,8 +84,7 @@ class StepDeleteDuplicateTupleIntegrationTest {
 
     @Test
     void execute_SameDateAsSqlScript_doesRemoveAllMandatiFromDatabase() throws Exception {
-        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep",
-                                                                      executionContext);
+        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep", executionContext);
         try (Connection connection = dataSource.getConnection();
              Statement countStatement = connection.createStatement()) {
             ResultSet resultSet = countStatement.executeQuery(COUNT_MANDATI_SQL);
@@ -102,8 +99,7 @@ class StepDeleteDuplicateTupleIntegrationTest {
 
     @Test
     void execute_SameDateAsSqlScript_doesRemoveAllSediFromDatabase() throws Exception {
-        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep",
-                                                                      executionContext);
+        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep", executionContext);
         try (Connection connection = dataSource.getConnection();
              Statement countStatement = connection.createStatement()) {
             ResultSet resultSet = countStatement.executeQuery(COUNT_SEDI_SQL);
@@ -118,8 +114,7 @@ class StepDeleteDuplicateTupleIntegrationTest {
 
     @Test
     void execute_SameDateAsSqlScript_doesRemoveAllCollaboratoriFromDatabase() throws Exception {
-        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep",
-                                                                      executionContext);
+        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep", executionContext);
         try (Connection connection = dataSource.getConnection();
              Statement countStatement = connection.createStatement()) {
             ResultSet resultSet = countStatement.executeQuery(COUNT_COLLABORATORI_SQL);
@@ -134,8 +129,7 @@ class StepDeleteDuplicateTupleIntegrationTest {
 
     @Test
     void execute_SameDateAsSqlScript_doesRemoveAllIntermediariFromDatabase() throws Exception {
-        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep",
-                                                                      executionContext);
+        jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep", executionContext);
         try (Connection connection = dataSource.getConnection();
              Statement countStatement = connection.createStatement()) {
             ResultSet resultSet = countStatement.executeQuery(COUNT_INTERMEDIARI_SQL);
@@ -147,12 +141,13 @@ class StepDeleteDuplicateTupleIntegrationTest {
             }
         }
     }
+
     @Test
     @Sql(scripts = "/dropSchema.sql")
     @Sql(scripts = "/schema.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void execute_withDroppedTables_doesFail() {
         JobExecution shouldFail = jobLauncherTestUtils.launchStep("deleteDuplicateTupleStep",
-                                                                      executionContext);
+                                                                  executionContext);
         assertThat(shouldFail.getExitStatus().getExitCode()).isEqualTo("FAILED");
     }
 

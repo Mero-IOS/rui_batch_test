@@ -4,14 +4,13 @@ import static io.ioslab.rui.batch.utility.Costants.PARAMETER_DATE_CSV;
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_INPUT_PATH;
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_OUTPUT_PATH;
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_URL;
-import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
+import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mockStatic;
 
 import io.ioslab.rui.batch.RuiBatchApplication;
 import io.ioslab.rui.batch.utility.SendEmailError;
-import java.io.IOException;
 import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ import org.springframework.test.context.TestPropertySource;
 @ActiveProfiles("test")
 @SpringBatchTest
 @TestPropertySource(properties = "spring.batch.job.enabled=false")
-public class StepParametersValidationIntegrationTest {
+class StepParametersValidationIntegrationTest {
 
     @Autowired
     Job ruiBatchJob;
@@ -49,7 +48,7 @@ public class StepParametersValidationIntegrationTest {
     JobParameters jobParameters;
 
     @BeforeEach
-    void setParametersValidationTasklet() throws IOException {
+    void setParametersValidationTasklet() {
         chunkContextMock = mockChunkContext();
         jobParameters = new JobParametersBuilder().addString(PARAMETER_URL, ANY_PARAM)
                                                   .addString(PARAMETER_DATE_CSV,
@@ -123,7 +122,7 @@ public class StepParametersValidationIntegrationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {PARAMETER_DATE_CSV, PARAMETER_URL})
-    void execute_anyValidDate_DoesPutDateAndUrlInContext(String value) throws Exception {
+    void execute_anyValidDate_DoesPutDateAndUrlInContext(String value) {
         assertThat(jobLauncherTestUtils.launchStep("parametersValidationStep", jobParameters)
                                        .getExecutionContext()
                                        .get(value)).isNotNull();

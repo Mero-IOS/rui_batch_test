@@ -6,16 +6,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import io.ioslab.rui.batch.processor.RuiCollaboratoriProcessor;
 import io.ioslab.rui.batch.processor.RuiMandatiProcessor;
 import io.ioslab.rui.batch.utility.Casting;
-import io.ioslab.rui.common.model.rui.RuiCollaboratori;
 import io.ioslab.rui.common.model.rui.RuiMandati;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-public class RuiMandatiProcessorUnitTest {
+class RuiMandatiProcessorUnitTest {
+
     RuiMandatiProcessor ruiMandatiProcessor;
 
     @Test
@@ -36,9 +35,9 @@ public class RuiMandatiProcessorUnitTest {
         ruiMandatiProcessor = RuiMandatiProcessor.builder().build();
         try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             when(Casting.castStringToDate(any())).thenReturn(null);
-            RuiMandati collaboratori = new RuiMandati();
-            ruiMandatiProcessor.process(collaboratori);
-            assertThat(collaboratori.getDataElaborazione()).isNull();
+            RuiMandati mandati = new RuiMandati();
+            ruiMandatiProcessor.process(mandati);
+            assertThat(mandati.getDataElaborazione()).isNull();
         }
     }
 
@@ -47,8 +46,9 @@ public class RuiMandatiProcessorUnitTest {
         ruiMandatiProcessor = RuiMandatiProcessor.builder().build();
         try (MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             when(Casting.castStringToDate(any())).thenThrow(new RuntimeException("TEST_EXCEPTION"));
-            RuiMandati collaboratori = new RuiMandati();
-            assertThrows(RuntimeException.class, ()->ruiMandatiProcessor.process(collaboratori));
+            RuiMandati mandati = new RuiMandati();
+            assertThrows(RuntimeException.class, () -> ruiMandatiProcessor.process(mandati));
         }
     }
+
 }

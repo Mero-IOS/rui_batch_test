@@ -6,8 +6,6 @@ import static io.ioslab.rui.batch.utility.Costants.PARAMETER_OUTPUT_PATH;
 import static io.ioslab.rui.batch.utility.Costants.PARAMETER_URL;
 import static io.ioslab.rui.utils.TestUtils.mockChunkContext;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.springframework.batch.test.MetaDataInstanceFactory.createJobExecution;
 
 import io.ioslab.rui.batch.utility.InsertParametersInContext;
 import java.io.File;
@@ -62,29 +60,26 @@ class InsertParametersInContextUnitTest {
     }
 
     @Test
-    void putOutputPathInContext_AnyString_createsOutputDirectory()
-        throws IOException {
+    void putOutputPathInContext_AnyString_createsOutputDirectory() throws IOException {
 
         Path outputPath = Files.createTempDirectory("TEST");
         Files.delete(outputPath);
         String outputPathString = outputPath.toString();
         String date = "DATE";
-        String outputDirectoryPath = outputPathString + File.separator + "rui_ivass" + File.separator +
-                                     date;
+        String outputDirectoryPath = outputPathString + File.separator + "rui_ivass" +
+                                     File.separator + date;
         insertParametersInContextTest.putOutputPathInContext(outputPathString, "DATE");
         assertThat(new File(outputDirectoryPath)).exists();
     }
 
     @Test
-    void putOutputPathInContext_AnyString_doesPutAnyStringInOutputPath()
-        throws IOException {
+    void putOutputPathInContext_AnyString_doesPutAnyStringInOutputPath() throws IOException {
         Path outputPath = Files.createTempDirectory("TEST");
         String outputPathString = outputPath.toString();
         String date = "DATE";
         insertParametersInContextTest.putOutputPathInContext(outputPathString, "DATE");
         assertThat(jobExecution.getExecutionContext().getString(PARAMETER_OUTPUT_PATH)).contains(
-            outputPathString + File.separator + "rui_ivass" + File.separator +
-            date);
+            outputPathString + File.separator + "rui_ivass" + File.separator + date);
     }
 
 }

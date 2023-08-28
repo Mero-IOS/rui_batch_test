@@ -1,26 +1,18 @@
 package io.ioslab.rui.unit.utility;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import io.ioslab.rui.batch.utility.SendEmailError;
 import io.ioslab.rui.common.service.ini.IniReader;
-import io.ioslab.rui.common.service.mail.Mail;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.MailException;
 
 class SendMailErrorUnitTest {

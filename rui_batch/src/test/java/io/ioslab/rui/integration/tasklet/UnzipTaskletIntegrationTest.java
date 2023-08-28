@@ -35,15 +35,19 @@ class UnzipTaskletIntegrationTest {
     Path zipClonedToOutputPath;
     Resource inputZip = new ClassPathResource("unzipTaskletMockZips/MOCKDATA.zip");
 
-    Resource emptyEntryInputZip = new ClassPathResource("unzipTaskletMockZips/ZERO_BYTES_ENTRY.zip");
+    Resource emptyEntryInputZip = new ClassPathResource(
+        "unzipTaskletMockZips/ZERO_BYTES_ENTRY.zip");
 
     @BeforeEach
     void setup() throws IOException {
         outputPath = Files.createTempDirectory("OUTPUT_TEST").toString();
         zipClonedToOutputPath = Paths.get(outputPath)
-                                     .resolve("DATI_RUI_" + TestConstants.CSV_FILE_NAME_DATE + ".zip");
+                                     .resolve(
+                                         "DATI_RUI_" + TestConstants.CSV_FILE_NAME_DATE + ".zip");
         Files.copy(Paths.get(inputZip.getFile().getPath()), zipClonedToOutputPath);
-        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet(inputPath, TestConstants.CSV_FILE_NAME_DATE, outputPath);
+        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet(inputPath,
+                                                                    TestConstants.CSV_FILE_NAME_DATE,
+                                                                    outputPath);
     }
 
     @Test
@@ -59,7 +63,9 @@ class UnzipTaskletIntegrationTest {
 
     @Test
     void execute_fromReadyOutputFolder_doesUnzip() throws Exception {
-        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet(null, TestConstants.CSV_FILE_NAME_DATE, outputPath);
+        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet(null,
+                                                                    TestConstants.CSV_FILE_NAME_DATE,
+                                                                    outputPath);
         unzipTasklet.execute(mock(StepContribution.class), mock(ChunkContext.class));
         Files.delete(zipClonedToOutputPath);
         assertThat(new File(outputPath).listFiles()).allMatch(fileInDirectory -> {
@@ -71,7 +77,7 @@ class UnzipTaskletIntegrationTest {
 
     @Test
     void unzip_onIOException_doesThrowMailErrorException() throws IOException {
-        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet(inputPath,"ANY","ANY");
+        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet(inputPath, "ANY", "ANY");
         try (MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
              MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
                  SendEmailError.class)) {
@@ -84,7 +90,7 @@ class UnzipTaskletIntegrationTest {
 
     @Test
     void writeFileFromZipToLocation_onIOException_doesThrowMailErrorException() throws IOException {
-        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet("ANY","ANY","ANY");
+        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet("ANY", "ANY", "ANY");
         try (MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
              MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
                  SendEmailError.class)) {
@@ -98,7 +104,7 @@ class UnzipTaskletIntegrationTest {
 
     @Test
     void writeFileFromZipToLocation_onEmptyEntry_doesThrowMailErrorException() throws IOException {
-        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet("ANY","ANY","ANY");
+        unzipTasklet = new UnzipTaskletConfiguration().unzipTasklet("ANY", "ANY", "ANY");
         try (MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
              MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
                  SendEmailError.class)) {

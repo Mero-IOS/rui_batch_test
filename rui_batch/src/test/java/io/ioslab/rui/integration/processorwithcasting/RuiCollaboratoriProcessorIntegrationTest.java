@@ -8,10 +8,8 @@ import static org.mockito.Mockito.mockStatic;
 import io.ioslab.rui.batch.configuration.RuiProcessorConfiguration;
 import io.ioslab.rui.batch.exception.MailErrorException;
 import io.ioslab.rui.batch.processor.RuiCollaboratoriProcessor;
-
 import io.ioslab.rui.batch.utility.SendEmailError;
 import io.ioslab.rui.common.model.rui.RuiCollaboratori;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -21,7 +19,8 @@ class RuiCollaboratoriProcessorIntegrationTest {
 
     @Test
     void process_anyDate_doesSetDate() {
-        ruiCollaboratoriProcessor = new RuiProcessorConfiguration().processorRuiCollaboratori(CSV_DATE_AS_VALID_JOB_PARAMETER);
+        ruiCollaboratoriProcessor = new RuiProcessorConfiguration().processorRuiCollaboratori(
+            CSV_DATE_AS_VALID_JOB_PARAMETER);
         RuiCollaboratori collaboratori = new RuiCollaboratori();
         ruiCollaboratoriProcessor.process(collaboratori);
         assertThat(collaboratori.getDataElaborazione()).isEqualTo(CSV_DATE_AS_VALID_JOB_PARAMETER);
@@ -45,10 +44,13 @@ class RuiCollaboratoriProcessorIntegrationTest {
 
     @Test
     void process_invalidDate_doesThrowMailErrorException() {
-        try(MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(SendEmailError.class)){
-            ruiCollaboratoriProcessor = new RuiProcessorConfiguration().processorRuiCollaboratori("INVALID_DATE");
+        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
+            SendEmailError.class)) {
+            ruiCollaboratoriProcessor = new RuiProcessorConfiguration().processorRuiCollaboratori(
+                "INVALID_DATE");
             RuiCollaboratori collaboratori = new RuiCollaboratori();
-            assertThrows(MailErrorException.class, () -> ruiCollaboratoriProcessor.process(collaboratori));
+            assertThrows(MailErrorException.class,
+                         () -> ruiCollaboratoriProcessor.process(collaboratori));
         }
     }
 

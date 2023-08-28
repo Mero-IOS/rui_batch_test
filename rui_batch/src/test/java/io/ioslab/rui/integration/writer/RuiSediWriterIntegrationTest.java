@@ -1,19 +1,13 @@
 package io.ioslab.rui.integration.writer;
 
-import static io.ioslab.rui.utils.TestConstants.COUNT_MANDATI_SQL;
 import static io.ioslab.rui.utils.TestConstants.COUNT_SEDI_SQL;
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_SQL_DATE;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.fail;
 
 import io.ioslab.rui.batch.datasource.CustomDataSource;
 import io.ioslab.rui.batch.writer.RuiSediWriter;
 import io.ioslab.rui.common.model.rui.RuiSedi;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -38,7 +32,7 @@ class RuiSediWriterIntegrationTest {
     private List<RuiSedi> sediList;
 
     @BeforeEach
-    void setWriter() throws SQLException {
+    void setWriter() {
         dataSource = new CustomDataSource().getDataSourceTest();
         writer = new RuiSediWriter().writerRuiSedi(dataSource);
         writer.afterPropertiesSet();
@@ -48,8 +42,8 @@ class RuiSediWriterIntegrationTest {
     @Test
     void write_AnyList_doesWriteToDatabase() throws Exception {
         writer.write(sediList);
-        assertThat(new JdbcTemplate(dataSource).queryForObject(COUNT_SEDI_SQL,
-                                                               Integer.class)).isEqualTo(
+        assertThat(
+            new JdbcTemplate(dataSource).queryForObject(COUNT_SEDI_SQL, Integer.class)).isEqualTo(
             VALID_RECORD_PER_CSV);
     }
 

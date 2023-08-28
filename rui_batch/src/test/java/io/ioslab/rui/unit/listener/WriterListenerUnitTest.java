@@ -2,14 +2,13 @@ package io.ioslab.rui.unit.listener;
 
 import static org.mockito.Mockito.mockStatic;
 
-import io.ioslab.rui.batch.listener.ReaderListener;
 import io.ioslab.rui.batch.listener.WriterListener;
 import io.ioslab.rui.batch.utility.SendEmailError;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-public class WriterListenerUnitTest {
+class WriterListenerUnitTest {
 
     WriterListener writerListener;
 

@@ -51,13 +51,13 @@ class StepRuiIntermediariCsvToDatabaseIntegrationTest {
 
     private ExecutionContext executionContext;
 
-    private Resource mockCsvWithValidRecords = new ClassPathResource(
+    private final Resource mockCsvWithValidRecords = new ClassPathResource(
         "mockCsv/mockCsvWithValidRecords");
-    private Resource mockCsvWithSingleValidRecord = new ClassPathResource(
+    private final Resource mockCsvWithSingleValidRecord = new ClassPathResource(
         "mockCsv/mockCsvWithSingleValidRecord");
-    private Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
+    private final Resource mockCsvWithValidAndInvalidRecords = new ClassPathResource(
         "mockCsv/mockCsvWithValidAndInvalidRecords");
-    private Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
+    private final Resource mockCsvWithOnlyFailingRecords = new ClassPathResource(
         "mockCsv/mockCsvWithOnlyFailingRecords");
 
     @BeforeEach
@@ -112,8 +112,7 @@ class StepRuiIntermediariCsvToDatabaseIntegrationTest {
             SendEmailError.class)) {
             executionContext.put(PARAMETER_OUTPUT_PATH,
                                  mockCsvWithOnlyFailingRecords.getFile().getPath());
-            jobLauncherTestUtils.launchStep(
-                "ruiIntermediariCsvToDatabaseStep", executionContext);
+            jobLauncherTestUtils.launchStep("ruiIntermediariCsvToDatabaseStep", executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
         }
@@ -142,8 +141,7 @@ class StepRuiIntermediariCsvToDatabaseIntegrationTest {
              MockedStatic<Casting> castingMockedStatic = mockStatic(Casting.class)) {
             castingMockedStatic.when(() -> Casting.castStringToDate(anyString()))
                                .thenThrow(new ParseException("TEST_EXCEPTION"));
-            JobExecution execution = jobLauncherTestUtils.launchStep(
-                "ruiIntermediariCsvToDatabaseStep", executionContext);
+            jobLauncherTestUtils.launchStep("ruiIntermediariCsvToDatabaseStep", executionContext);
             sendEmailErrorMockedStatic.verify(
                 () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
         }
@@ -191,7 +189,8 @@ class StepRuiIntermediariCsvToDatabaseIntegrationTest {
             file -> file.getName().contains("scarti.txt"));
     }
 
-    //AS RUIINTERMEDIARI CONTAINS 3 DATES, TO MAKE THE PROCESSOR FAIL AND NOT THE MAPPER NEED 3 DATES.
+    //thenReturn(new Date()) = mapper dates
+    //thenThrow(new RuntimeException("TEST_EXCEPTION")) = processing exception
     @Test
     void ruiIntermediariCsvToDataBaseStep_withProcessingSkipsNotExceedingSkipLimit_doesCreateScartiFile()
         throws IOException {

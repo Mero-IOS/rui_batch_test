@@ -35,5 +35,6 @@ class CastingUnitTest {
     void castStringToDate_emptyString_doesReturnNull() {
         assertThat(Casting.castStringToDate("")).isNull();
     }
+
 }
 
