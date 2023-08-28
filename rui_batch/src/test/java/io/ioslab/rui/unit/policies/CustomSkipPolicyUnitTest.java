@@ -13,7 +13,7 @@ import org.mockito.MockedStatic;
 class CustomSkipPolicyUnitTest {
 
     @Test
-    void shouldSkip_overTen_doesThrowException() {
+    void shouldSkip_overEleven_doesThrowException() {
         try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
             SendEmailError.class)) {
             CustomSkipPolicy customSkipPolicy = CustomSkipPolicy.builder().build();
@@ -23,9 +23,9 @@ class CustomSkipPolicyUnitTest {
     }
 
     @Test
-    void shouldSkip_belowTen_doesReturnTrue() {
+    void shouldSkip_belowEleven_doesReturnTrue() {
         CustomSkipPolicy customSkipPolicy = CustomSkipPolicy.builder().build();
-        assertTrue(customSkipPolicy.shouldSkip(new RuntimeException("TEST_EXCEPTION"), 9));
+        assertTrue(customSkipPolicy.shouldSkip(new RuntimeException("TEST_EXCEPTION"), 10));
     }
 
 }
