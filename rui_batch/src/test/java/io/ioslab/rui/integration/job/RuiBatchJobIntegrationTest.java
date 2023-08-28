@@ -8,6 +8,7 @@ import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_SQL_DATE;
 import static io.ioslab.rui.utils.TestConstants.CSV_DATE_AS_VALID_JOB_PARAMETER;
 import static io.ioslab.rui.utils.TestConstants.VALID_RECORD_PER_CSV;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 
 import io.ioslab.rui.batch.RuiBatchApplication;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.MockedStatic;
+import org.mockito.exceptions.base.MockitoAssertionError;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
@@ -72,16 +74,12 @@ class RuiBatchJobIntegrationTest {
 
     @Test
     void launchJob_emptyJobParams_doesFail() throws Exception {
-        assertThat(jobLauncherTestUtils.launchJob(new JobParameters())
-                                       .getExitStatus()
-                                       .getExitCode()).isEqualTo("FAILED");
+        assertThat(getJobExitCode(new JobParameters())).isEqualTo("FAILED");
     }
 
     @Test
     void launchJob_validJobParams_doesComplete() throws Exception {
-        assertThat(
-            jobLauncherTestUtils.launchJob(jobParameters).getExitStatus().getExitCode()).isEqualTo(
-            "COMPLETED");
+        assertThat(getJobExitCode(jobParameters)).isEqualTo("COMPLETED");
     }
 
     @ParameterizedTest
@@ -115,7 +113,7 @@ class RuiBatchJobIntegrationTest {
     }
 
     @Test
-    void launchJob_validJobParamsWithInputPath_doesNotDownload() throws Exception {
+    void launchJob_validJobParamsWithInputPath_doesNotDownloadZip() throws Exception {
         jobLauncherTestUtils.launchJob(jobParameters);
         assertThat(outputEmptyFolder.toFile().listFiles()).noneMatch(
             file -> file.getName().contains(".zip"));
@@ -123,100 +121,102 @@ class RuiBatchJobIntegrationTest {
 
     @Test
     void launchJob_emptyOutputPath_doesFail() throws Exception {
-        JobParameters failingDate = new JobParametersBuilder().addString(PARAMETER_DATE_CSV,
-                                                                         CSV_DATE_AS_VALID_JOB_PARAMETER)
-                                                              .addString(PARAMETER_OUTPUT_PATH, "")
-                                                              .addString(PARAMETER_INPUT_PATH,
-                                                                         ZIP_VALID_WITH_ERRORS.getFile()
-                                                                                              .getPath())
-                                                              .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(failingDate)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+        JobParameters emptyOutputParams = new JobParametersBuilder().addString(PARAMETER_DATE_CSV,
+                                                                               CSV_DATE_AS_VALID_JOB_PARAMETER)
+                                                                    .addString(
+                                                                        PARAMETER_OUTPUT_PATH, "")
+                                                                    .addString(PARAMETER_INPUT_PATH,
+                                                                               ZIP_VALID_WITH_ERRORS.getFile()
+                                                                                                    .getPath())
+                                                                    .toJobParameters();
+        assertThat(getJobExitCode(emptyOutputParams)).isEqualTo("FAILED");
     }
 
     @Test
     void launchJob_withNoInputOrLink_doesFail() throws Exception {
-        JobParameters failingDate = new JobParametersBuilder().addString(PARAMETER_DATE_CSV,
-                                                                         CSV_DATE_AS_VALID_JOB_PARAMETER)
-                                                              .addString(PARAMETER_OUTPUT_PATH,
+        JobParameters noInputOrUrlParams = new JobParametersBuilder().addString(PARAMETER_DATE_CSV,
+                                                                                CSV_DATE_AS_VALID_JOB_PARAMETER)
+                                                                     .addString(
+                                                                         PARAMETER_OUTPUT_PATH,
                                                                          outputEmptyFolder.toString())
-                                                              .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(failingDate)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+                                                                     .toJobParameters();
+        assertThat(getJobExitCode(noInputOrUrlParams)).isEqualTo("FAILED");
     }
 
     @Test
     void launchJob_withNoInputOrUrl_doesSendMail() throws Exception {
-        JobParameters failingDate = new JobParametersBuilder().addString(PARAMETER_DATE_CSV,
-                                                                         CSV_DATE_AS_VALID_JOB_PARAMETER)
-                                                              .addString(PARAMETER_OUTPUT_PATH,
+        JobParameters noInputOrUrlParams = new JobParametersBuilder().addString(PARAMETER_DATE_CSV,
+                                                                                CSV_DATE_AS_VALID_JOB_PARAMETER)
+                                                                     .addString(
+                                                                         PARAMETER_OUTPUT_PATH,
                                                                          outputEmptyFolder.toString())
-                                                              .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(failingDate);
-            sendEmailErrorMockedStatic.verify(
-                () -> SendEmailError.manageError("percorsoInput e url non presenti!"));
-        }
+                                                                     .toJobParameters();
+        assertThat(
+            isFailMailSent(noInputOrUrlParams, "percorsoInput e url non presenti!")).isTrue();
     }
 
     @Test
     void launchJob_withBothInputAndUrl_doesFail() throws Exception {
-        JobParameters failingDate = new JobParametersBuilder().addString(PARAMETER_DATE_CSV, "")
-                                                              .addString(PARAMETER_OUTPUT_PATH,
-                                                                         outputEmptyFolder.toString())
-                                                              .addString(PARAMETER_INPUT_PATH,
-                                                                         "ANY")
-                                                              .addString(PARAMETER_URL, "ANY")
-                                                              .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(failingDate)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+        JobParameters bothInputAndUrlParams = new JobParametersBuilder().addString(
+                                                                            PARAMETER_DATE_CSV, "")
+                                                                        .addString(
+                                                                            PARAMETER_OUTPUT_PATH,
+                                                                            outputEmptyFolder.toString())
+                                                                        .addString(
+                                                                            PARAMETER_INPUT_PATH,
+                                                                            "ANY")
+                                                                        .addString(PARAMETER_URL,
+                                                                                   "ANY")
+                                                                        .toJobParameters();
+        assertThat(getJobExitCode(bothInputAndUrlParams)).isEqualTo("FAILED");
     }
 
     @Test
     void launchJob_withBothInputAndUrl_doesSendMail() throws Exception {
-        JobParameters failingDate = new JobParametersBuilder().addString(PARAMETER_DATE_CSV, "")
-                                                              .addString(PARAMETER_OUTPUT_PATH,
-                                                                         outputEmptyFolder.toString())
-                                                              .addString(PARAMETER_INPUT_PATH,
-                                                                         "ANY")
-                                                              .addString(PARAMETER_URL, "ANY")
-                                                              .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(failingDate);
-            sendEmailErrorMockedStatic.verify(
-                () -> SendEmailError.manageError("percorsoInput e url entrambi presenti!"));
-        }
+        JobParameters bothInputAndUrlParams = new JobParametersBuilder().addString(
+                                                                            PARAMETER_DATE_CSV, "")
+                                                                        .addString(
+                                                                            PARAMETER_OUTPUT_PATH,
+                                                                            outputEmptyFolder.toString())
+                                                                        .addString(
+                                                                            PARAMETER_INPUT_PATH,
+                                                                            "ANY")
+                                                                        .addString(PARAMETER_URL,
+                                                                                   "ANY")
+                                                                        .toJobParameters();
+        assertThat(isFailMailSent(bothInputAndUrlParams,
+                                  "percorsoInput e url entrambi presenti!")).isTrue();
     }
 
     @Test
     void launchJob_withEmptyDate_doesFail() throws Exception {
-        JobParameters failingDate = new JobParametersBuilder().addString(PARAMETER_DATE_CSV, "")
-                                                              .addString(PARAMETER_OUTPUT_PATH,
-                                                                         outputEmptyFolder.toString())
-                                                              .addString(PARAMETER_INPUT_PATH,
-                                                                         ZIP_VALID_WITH_ERRORS.getFile()
-                                                                                              .getPath())
-                                                              .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(failingDate)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+        JobParameters emptyDateJobParameters = new JobParametersBuilder().addString(
+                                                                             PARAMETER_DATE_CSV, "")
+                                                                         .addString(
+                                                                             PARAMETER_OUTPUT_PATH,
+                                                                             outputEmptyFolder.toString())
+                                                                         .addString(
+                                                                             PARAMETER_INPUT_PATH,
+                                                                             ZIP_VALID_WITH_ERRORS.getFile()
+                                                                                                  .getPath())
+                                                                         .toJobParameters();
+        assertThat(getJobExitCode(emptyDateJobParameters)).isEqualTo("FAILED");
+    }
+
+    @Test
+    void launchJob_withWrongDate_doesFail() throws Exception {
+        String wrongDate = "2023-01-02";
+        JobParameters wrongDateJobParameters = new JobParametersBuilder().addString(
+                                                                             PARAMETER_DATE_CSV, wrongDate)
+                                                                         .addString(
+                                                                             PARAMETER_OUTPUT_PATH,
+                                                                             outputEmptyFolder.toString())
+                                                                         .addString(
+                                                                             PARAMETER_INPUT_PATH,
+                                                                             ZIP_VALID_WITH_ERRORS.getFile()
+                                                                                                  .getPath())
+                                                                         .toJobParameters();
+        assertThat(getJobExitCode(wrongDateJobParameters)).isEqualTo("FAILED");
     }
 
     @Test
@@ -230,12 +230,8 @@ class RuiBatchJobIntegrationTest {
                                                                          ZIP_VALID_WITH_ERRORS.getFile()
                                                                                               .getPath())
                                                               .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(failingDate);
-            sendEmailErrorMockedStatic.verify(() -> SendEmailError.manageError(
-                "non tutti i file presentano la data: " + wrongDate));
-        }
+        assertThat(isFailMailSent(failingDate,
+                                  "non tutti i file presentano la data: " + wrongDate)).isTrue();
     }
 
     @Test
@@ -249,13 +245,8 @@ class RuiBatchJobIntegrationTest {
                                                                          ZIP_VALID_WITH_ERRORS.getFile()
                                                                                               .getPath())
                                                               .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(failingDate);
-            sendEmailErrorMockedStatic.verify(() -> SendEmailError.manageError("data non valida",
-                                                                               "Unparseable date: \"" +
-                                                                               notADate + "\""));
-        }
+        assertThat(isFailMailSent(failingDate, "data non valida",
+                                  "Unparseable date: \"" + notADate + "\"")).isTrue();
     }
 
     @Test
@@ -268,10 +259,7 @@ class RuiBatchJobIntegrationTest {
                                                                              EMPTY_ENTRY_INPUT.getFile()
                                                                                               .getPath())
                                                                   .toJobParameters();
-        MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(SendEmailError.class);
-        assertThat(jobLauncherTestUtils.launchJob(emptyEntryInput)
-                                       .getExitStatus()
-                                       .getExitCode()).isEqualTo("FAILED");
+        assertThat(getJobExitCode(emptyEntryInput)).isEqualTo("FAILED");
     }
 
     @Test
@@ -284,12 +272,8 @@ class RuiBatchJobIntegrationTest {
                                                                              EMPTY_ENTRY_INPUT.getFile()
                                                                                               .getPath())
                                                                   .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(emptyEntryInput);
-            sendEmailErrorMockedStatic.verify(() -> SendEmailError.manageError(
-                "file: entrywihtzerobytes.txt presenta dimensione 0"));
-        }
+        assertThat(isFailMailSent(emptyEntryInput,
+                                  "file: entrywihtzerobytes.txt presenta dimensione 0")).isTrue();
     }
 
     @ParameterizedTest
@@ -318,12 +302,7 @@ class RuiBatchJobIntegrationTest {
                                                                               zipWithFailingValue.getFile()
                                                                                                  .getPath())
                                                                           .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(failingValueCsvToDbStep)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+        assertThat(getJobExitCode(failingValueCsvToDbStep)).isEqualTo("FAILED");
     }
 
     @ParameterizedTest
@@ -342,12 +321,8 @@ class RuiBatchJobIntegrationTest {
                                                                               zipWithFailingValue.getFile()
                                                                                                  .getPath())
                                                                           .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(failingValueCsvToDbStep);
-            sendEmailErrorMockedStatic.verify(
-                () -> SendEmailError.manageError("numero massimo di righe saltate raggiunto"));
-        }
+        assertThat(isFailMailSent(failingValueCsvToDbStep,
+                                  "numero massimo di righe saltate raggiunto")).isTrue();
     }
 
     @ParameterizedTest
@@ -365,18 +340,12 @@ class RuiBatchJobIntegrationTest {
                                                                               zipWithFailingValue.getFile()
                                                                                                  .getPath())
                                                                           .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(failingValueCsvToDbStep)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+        assertThat(getJobExitCode(failingValueCsvToDbStep)).isEqualTo("FAILED");
     }
 
     @ParameterizedTest
     @EnumSource(DomainObjectEnumerator.class)
-    void launchJob_missingAnyCsv_doesNotSendMail(DomainObjectEnumerator value)
-        throws Exception {
+    void launchJob_missingAnyCsv_doesNotSendMail(DomainObjectEnumerator value) throws Exception {
         Resource zipWithFailingValue = new ClassPathResource(
             "zipsForIntegration/" + value.name() + "_MISSING.zip");
         JobParameters failingValueCsvToDbStep = new JobParametersBuilder().addString(
@@ -389,20 +358,58 @@ class RuiBatchJobIntegrationTest {
                                                                               zipWithFailingValue.getFile()
                                                                                                  .getPath())
                                                                           .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            jobLauncherTestUtils.launchJob(failingValueCsvToDbStep);
-            sendEmailErrorMockedStatic.verifyNoInteractions();
-        }
+        assertThat(isFailMailSent(failingValueCsvToDbStep)).isFalse();
     }
 
     @Test
     @Sql(scripts = "/dropSchema.sql")
     @Sql(scripts = "/schema.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void launchJob_withDroppedDomainTables_doesFail() throws Exception {
-        assertThat(
-            jobLauncherTestUtils.launchJob(jobParameters).getExitStatus().getExitCode()).isEqualTo(
-            "FAILED");
+        assertThat(getJobExitCode(jobParameters)).isEqualTo("FAILED");
+    }
+
+    //Utilities
+    private String getJobExitCode(JobParameters jobParameters) throws Exception {
+        try (MockedStatic<SendEmailError> ignored = mockStatic(
+            SendEmailError.class)) {
+            return jobLauncherTestUtils.launchJob(jobParameters).getExitStatus().getExitCode();
+        }
+    }
+
+    private boolean isFailMailSent(JobParameters failingParams, String message) throws Exception {
+        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
+            SendEmailError.class)) {
+            jobLauncherTestUtils.launchJob(failingParams);
+            sendEmailErrorMockedStatic.verify(() -> SendEmailError.manageError(message));
+            return true;
+        } catch (MockitoAssertionError e) {
+            return false;
+        }
+    }
+
+    private boolean isFailMailSent(JobParameters failingParams, String message, String stackTrace)
+        throws Exception {
+        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
+            SendEmailError.class)) {
+            jobLauncherTestUtils.launchJob(failingParams);
+            sendEmailErrorMockedStatic.verify(
+                () -> SendEmailError.manageError(message, stackTrace));
+            return true;
+        } catch (MockitoAssertionError e) {
+            return false;
+        }
+    }
+
+    private boolean isFailMailSent(JobParameters failingParams) throws Exception {
+        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
+            SendEmailError.class)) {
+            jobLauncherTestUtils.launchJob(failingParams);
+            sendEmailErrorMockedStatic.verify(() -> SendEmailError.manageError(anyString()));
+            return true;
+        } catch (MockitoAssertionError e) {
+            return false;
+        }
     }
 
 }
+
