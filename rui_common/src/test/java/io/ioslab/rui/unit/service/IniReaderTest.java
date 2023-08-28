@@ -24,38 +24,42 @@ class IniReaderTest {
     }
 
     @Test
-    void setIniReader_EmptyPath_doesSystemExit() {
+    void setIniReader_EmptyString_doesSystemExit() {
         assertThrows(SystemExitException.class, () -> IniReader.setIniReader(""));
     }
 
     @Test
-    void setIniReader_NotIni_doesSystemExit() {
-        assertThrows(SystemExitException.class, () -> IniReader.setIniReader(""));
+    void setIniReader_StringShorterthanFour_doesThrowIndexOutOfBoundsException() {
+        assertThrows(IndexOutOfBoundsException.class, () -> IniReader.setIniReader("ANY"));
+    }
+    @Test
+    void setIniReader_StringNotEndingIni_doesSystemExit() {
+        assertThrows(SystemExitException.class, () -> IniReader.setIniReader("ANY_MORE_THAN_FOUR"));
     }
 
     @Test
-    void setIniReader_NotAFile_doesInitialize() {
-        IniReader.setIniReader("NOTAFILE.ini");
+    void setIniReader_NotEmptyStringEndingIni_doesInitialize() {
+        IniReader.setIniReader("ANY.ini");
         assertThat(IniReader.getIniReaderder()).isInstanceOf(IniReader.class);
     }
 
     @Test
     void getMySqlModelFromIni_NotAFile_doesThrowNullPointerException() throws IOException {
-        IniReader.setIniReader("NOTAFILE.ini");
+        IniReader.setIniReader("ANY.ini");
         IniReader reader = IniReader.getIniReaderder();
         assertThrows(NullPointerException.class, reader::getMySqlModelFromIni);
     }
 
     @Test
     void getMailModelFromIni_NotAFile_doesThrowNullPointerException() throws IOException {
-        IniReader.setIniReader("NOTAFILE.ini");
+        IniReader.setIniReader("ANY.ini");
         IniReader reader = IniReader.getIniReaderder();
         assertThrows(NullPointerException.class, reader::getMailModelFromIni);
     }
 
     @Test
     void getSmtpModelFromIni_NotAFile_doesThrowNullPointerException() throws IOException {
-        IniReader.setIniReader("NOTAFILE.ini");
+        IniReader.setIniReader("ANY.ini");
         IniReader reader = IniReader.getIniReaderder();
         assertThrows(NullPointerException.class, reader::getSmtpModelFromIni);
     }
