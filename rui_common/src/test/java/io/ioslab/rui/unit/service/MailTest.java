@@ -1,22 +1,21 @@
 package io.ioslab.rui.unit.service;
 
-import static io.ioslab.rui.common.utility.Costants.INI_MAIL_SECTION;
-import static io.ioslab.rui.common.utility.Costants.INI_MYSQL_SECTION;
-import static io.ioslab.rui.common.utility.Costants.INI_SMTP_SECTION;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.ioslab.rui.common.service.ini.IniReader;
 import io.ioslab.rui.common.service.mail.Mail;
-import java.io.File;
 import java.io.IOException;
-import org.ini4j.Wini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.mail.MailParseException;
 
-public class MailTest {
+class MailTest {
 
     Mail testMail;
-
+    Resource iniTest = new ClassPathResource("config-test.ini");
+    Resource iniWithEmptyMailSection = new ClassPathResource("config-empty-mail.ini");
     @BeforeEach
     void setTestMail() {
         testMail = new Mail();
@@ -30,16 +29,20 @@ public class MailTest {
     }
 
     @Test
-    void sendMail_withEmptyToSection_doesThrowNullPointerException() throws IOException {
-        File iniFile = File.createTempFile("testIni", ".ini");
-        Wini iniTest = new Wini(iniFile);
-        iniTest.put(INI_SMTP_SECTION, "port", "25");
-        iniTest.put(INI_MAIL_SECTION, "from", "TEST_FROM");
-        iniTest.store();
-        IniReader.setIniReader(iniFile.getPath());
+    void sendMail_withEmptyMail_doesThrowMailParseException() throws IOException {
+        IniReader.setIniReader(iniTest.getFile().getPath());
+        assertThrows(MailParseException.class,
+                     () -> testMail.sendMail("TEST_SUBJECT", "TEST_BODY",
+                                             IniReader.getIniReaderder()));
+    }
+
+    @Test
+    void sendMail_withEmptyMail_doesThrowNullPointerException() throws IOException {
+        IniReader.setIniReader(iniWithEmptyMailSection.getFile().getPath());
         assertThrows(NullPointerException.class,
                      () -> testMail.sendMail("TEST_SUBJECT", "TEST_BODY",
                                              IniReader.getIniReaderder()));
     }
+
 
 }

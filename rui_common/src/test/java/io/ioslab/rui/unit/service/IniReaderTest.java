@@ -1,6 +1,5 @@
 package io.ioslab.rui.unit.service;
 
-import static io.ioslab.rui.common.utility.Costants.INI_SMTP_SECTION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -12,12 +11,14 @@ import io.ioslab.rui.common.service.ini.IniReader;
 import java.io.File;
 import java.io.IOException;
 import java.security.Permission;
-import org.ini4j.Ini;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 class IniReaderTest {
 
+    Resource iniTest = new ClassPathResource("config-test.ini");
     @BeforeEach
     void setUp() {
         System.setSecurityManager(new SystemExitAsExceptionSecurityManager());
@@ -66,16 +67,14 @@ class IniReaderTest {
 
     @Test
     void getMySqlModelFromIni_EmptyIni_getsMysqlModel() throws IOException {
-        String iniPath = File.createTempFile("test", ".ini").getPath();
-        IniReader.setIniReader(iniPath);
+        IniReader.setIniReader(iniTest.getFile().getPath());
         MySqlModel mySqlModel = IniReader.getIniReaderder().getMySqlModelFromIni();
         assertThat(mySqlModel).isInstanceOf(MySqlModel.class);
     }
 
     @Test
     void getMailModelFromIni_EmptyIni_getsMailModel() throws IOException {
-        String iniPath = File.createTempFile("test", ".ini").getPath();
-        IniReader.setIniReader(iniPath);
+        IniReader.setIniReader(iniTest.getFile().getPath());
         MailModel mailModel = IniReader.getIniReaderder().getMailModelFromIni();
         assertThat(mailModel).isInstanceOf(MailModel.class);
     }
@@ -90,11 +89,7 @@ class IniReaderTest {
 
     @Test
     void getSmtpModelFromIni_IniWithPort_getsSmtpModel() throws IOException {
-        String iniPath = File.createTempFile("test", ".ini").getPath();
-        Ini testConfig = new Ini(new File(iniPath));
-        testConfig.put(INI_SMTP_SECTION,"port",25);
-        testConfig.store();
-        IniReader.setIniReader(iniPath);
+        IniReader.setIniReader(iniTest.getFile().getPath());
         SmtpModel smtpModel = IniReader.getIniReaderder().getSmtpModelFromIni();
         assertThat(smtpModel).isInstanceOf(SmtpModel.class);
     }
