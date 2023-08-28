@@ -268,12 +268,10 @@ class RuiBatchJobIntegrationTest {
                                                                              EMPTY_ENTRY_INPUT.getFile()
                                                                                               .getPath())
                                                                   .toJobParameters();
-        try (MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(
-            SendEmailError.class)) {
-            assertThat(jobLauncherTestUtils.launchJob(emptyEntryInput)
-                                           .getExitStatus()
-                                           .getExitCode()).isEqualTo("FAILED");
-        }
+        MockedStatic<SendEmailError> sendEmailErrorMockedStatic = mockStatic(SendEmailError.class);
+        assertThat(jobLauncherTestUtils.launchJob(emptyEntryInput)
+                                       .getExitStatus()
+                                       .getExitCode()).isEqualTo("FAILED");
     }
 
     @Test
@@ -306,7 +304,8 @@ class RuiBatchJobIntegrationTest {
 
     @ParameterizedTest
     @EnumSource(DomainObjectEnumerator.class)
-    void launchJob_withCsvOverReadSkipLimit_doesFail(DomainObjectEnumerator value) throws Exception {
+    void launchJob_withCsvOverReadSkipLimit_doesFail(DomainObjectEnumerator value)
+        throws Exception {
         Resource zipWithFailingValue = new ClassPathResource(
             "zipsForIntegration/" + value.name() + "_FAILING.zip");
         JobParameters failingValueCsvToDbStep = new JobParametersBuilder().addString(
@@ -329,7 +328,8 @@ class RuiBatchJobIntegrationTest {
 
     @ParameterizedTest
     @EnumSource(DomainObjectEnumerator.class)
-    void launchJob_withCsvOverReadSkipLimit_doesSendMail(DomainObjectEnumerator value) throws Exception {
+    void launchJob_withCsvOverReadSkipLimit_doesSendMail(DomainObjectEnumerator value)
+        throws Exception {
         Resource zipWithFailingValue = new ClassPathResource(
             "zipsForIntegration/" + value.name() + "_FAILING.zip");
         JobParameters failingValueCsvToDbStep = new JobParametersBuilder().addString(
@@ -352,7 +352,7 @@ class RuiBatchJobIntegrationTest {
 
     @ParameterizedTest
     @EnumSource(DomainObjectEnumerator.class)
-    void launchJob_withMissingAnyCsv_doesFail(DomainObjectEnumerator value) throws Exception {
+    void launchJob_missingAnyCsv_doesFail(DomainObjectEnumerator value) throws Exception {
         Resource zipWithFailingValue = new ClassPathResource(
             "zipsForIntegration/" + value.name() + "_MISSING.zip");
         JobParameters failingValueCsvToDbStep = new JobParametersBuilder().addString(
@@ -375,7 +375,8 @@ class RuiBatchJobIntegrationTest {
 
     @ParameterizedTest
     @EnumSource(DomainObjectEnumerator.class)
-    void launchJob_withMissingAnyCsv_doesNotSendMail(DomainObjectEnumerator value) throws Exception {
+    void launchJob_missingAnyCsv_doesNotSendMail(DomainObjectEnumerator value)
+        throws Exception {
         Resource zipWithFailingValue = new ClassPathResource(
             "zipsForIntegration/" + value.name() + "_MISSING.zip");
         JobParameters failingValueCsvToDbStep = new JobParametersBuilder().addString(
@@ -403,6 +404,5 @@ class RuiBatchJobIntegrationTest {
             jobLauncherTestUtils.launchJob(jobParameters).getExitStatus().getExitCode()).isEqualTo(
             "FAILED");
     }
-
 
 }

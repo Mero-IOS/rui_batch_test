@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 class MailErrorExceptionUnitTest {
 
     @Test
-    void newException_constructor_doesSendMail() {
+    void newException_constructorWithOneString_doesSendMail() {
         try (MockedStatic<SendEmailError> sendMailErrorMock = Mockito.mockStatic(
             SendEmailError.class)) {
             new MailErrorException("TEST_EXCEPTION");
@@ -18,7 +18,7 @@ class MailErrorExceptionUnitTest {
     }
 
     @Test
-    void castStringToDate_constructor_doesSendMail(){
+    void newException_constructorWithTwoStrings_doesSendMail(){
         try (MockedStatic<SendEmailError> sendMailErrorMock = Mockito.mockStatic(
             SendEmailError.class)) {
             new MailErrorException("TEST_EXCEPTION", "TEST_TRACE");

@@ -5,7 +5,6 @@ package io.ioslab.rui.utils;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.batch.test.MetaDataInstanceFactory.createJobExecution;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
