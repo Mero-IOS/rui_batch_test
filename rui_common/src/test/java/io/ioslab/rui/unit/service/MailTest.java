@@ -49,7 +49,7 @@ class MailTest {
     }
 
     @Test
-    void sendMail_withEmptyPort_doesThrowParseException() throws IOException {
+    void sendMail_withEmptyPort_doesThrowNumberFormatException() throws IOException {
         IniReader.setIniReader(iniWithEmptyPort.getFile().getPath());
         IniReader iniReaderder = IniReader.getIniReaderder();
         assertThrows(NumberFormatException.class,
